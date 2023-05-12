@@ -18,9 +18,8 @@ class DPMSolverSampler(object):
         self.register_buffer('alphas_cumprod', to_torch(model.alphas_cumprod))
 
     def register_buffer(self, name, attr):
-        if type(attr) == torch.Tensor:
-            if attr.device != self.device:
-                attr = attr.to(self.device)
+        if type(attr) == torch.Tensor and attr.device != self.device:
+            attr = attr.to(self.device)
         setattr(self, name, attr)
 
     @torch.no_grad()
@@ -60,10 +59,11 @@ class DPMSolverSampler(object):
                 for ctmp in conditioning:
                     if ctmp.shape[0] != batch_size:
                         print(f"Warning: Got {ctmp.shape[0]} conditionings but batch-size is {batch_size}")
-            else:
-                if isinstance(conditioning, torch.Tensor):
-                    if conditioning.shape[0] != batch_size:
-                        print(f"Warning: Got {conditioning.shape[0]} conditionings but batch-size is {batch_size}")
+            elif (
+                isinstance(conditioning, torch.Tensor)
+                and conditioning.shape[0] != batch_size
+            ):
+                print(f"Warning: Got {conditioning.shape[0]} conditionings but batch-size is {batch_size}")
 
         # sampling
         C, H, W = shape
@@ -72,11 +72,7 @@ class DPMSolverSampler(object):
         print(f'Data shape for DPM-Solver sampling is {size}, sampling steps {S}')
 
         device = self.model.betas.device
-        if x_T is None:
-            img = torch.randn(size, device=device)
-        else:
-            img = x_T
-
+        img = torch.randn(size, device=device) if x_T is None else x_T
         ns = NoiseScheduleVP('discrete', alphas_cumprod=self.alphas_cumprod)
 
         model_fn = model_wrapper(
