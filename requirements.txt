@@ -5,7 +5,7 @@ imageio==2.31.1
 imageio-ffmpeg==0.4.2
 pytorch-lightning==1.6.0
 torchmetrics==0.6
-omegaconf==2.1.1
+omegaconf==2.3.0
 test-tube>=0.7.5
 streamlit>=0.73.1
 einops==0.3.0
