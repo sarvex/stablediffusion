@@ -8,7 +8,7 @@ torchmetrics==0.6
 omegaconf==2.1.1
 test-tube>=0.7.5
 streamlit>=0.73.1
-einops==0.3.0
+einops==0.7.0
 transformers==4.30.2
 webdataset==0.2.48
 open-clip-torch==2.7.0
